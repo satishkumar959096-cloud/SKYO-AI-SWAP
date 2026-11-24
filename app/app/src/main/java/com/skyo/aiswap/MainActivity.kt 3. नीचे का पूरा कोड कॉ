@@ -1,0 +1,103 @@
+
+package com.skyo.aiswap
+
+import android.net.Uri
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            MaterialTheme {
+                SkyoApp()
+            }
+        }
+    }
+}
+
+@Composable
+fun SkyoApp() {
+    var videoUri by remember { mutableStateOf<Uri?>(null) }
+    var photoUri by remember { mutableStateOf<Uri?>(null) }
+
+    val videoPicker = rememberLauncherForActivityResult(
+        ActivityResultContracts.GetContent()
+    ) { uri ->
+        videoUri = uri
+    }
+
+    val photoPicker = rememberLauncherForActivityResult(
+        ActivityResultContracts.GetContent()
+    ) { uri ->
+        photoUri = uri
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = "SKYO AI SWAP",
+            style = MaterialTheme.typography.headlineLarge
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        Text("AI Full Body Character Replacement")
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        Button(
+            onClick = { videoPicker.launch("video/*") },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("वीडियो चुनें")
+        }
+
+        Text(
+            if (videoUri != null) "वीडियो चुना गया ✓"
+            else "अभी कोई वीडियो नहीं चुना गया"
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Button(
+            onClick = { photoPicker.launch("image/*") },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("अपनी फोटो चुनें")
+        }
+
+        Text(
+            if (photoUri != null) "फोटो चुनी गई ✓"
+            else "अभी कोई फोटो नहीं चुनी गई"
+        )
+
+        Spacer(modifier = Modifier.height(28.dp))
+
+        Text(
+            text = "AI Processing Server अभी कनेक्ट नहीं है।",
+            style = MaterialTheme.typography.bodyMedium
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        Text(
+            text = "SKYO AI SWAP - Version 1.0",
+            style = MaterialTheme.typography.labelMedium
+        )
+    }
+}
